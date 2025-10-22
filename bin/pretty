@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "=== Bundle ==="
+bundle check || bundle install
+
+echo "=== StandardRB ==="
+bundle exec standardrb --fix-unsafely
