@@ -51,9 +51,14 @@ describe Devinator::Backends::Tmux do
     end
 
     describe "#run_commands" do
-      it "launches a session on the first command then a new window for each following command" do
+      it "launches a session and on the first command renames the window then a new window for each following command" do
         expect(@tty).to receive(:run).with(
-          "tmux", "new-session", "-d", "-s", "the-session", "-n", "cmd1",
+          "tmux", "new-session", "-d", "-s", "the-session",
+          only_output_on_error: true
+        )
+
+        expect(@tty).to receive(:run).with(
+          "tmux", "rename-window", "-t", "the-session", "cmd1",
           only_output_on_error: true
         )
 
@@ -143,7 +148,12 @@ describe Devinator::Backends::Tmux do
           ).and_return(double(:result, success?: false))
 
           expect(@tty).to receive(:run).with(
-            "tmux", "new-session", "-d", "-s", "the-session", "-n", "cmd1",
+            "tmux", "new-session", "-d", "-s", "the-session",
+            only_output_on_error: true
+          )
+
+          expect(@tty).to receive(:run).with(
+            "tmux", "rename-window", "-t", "the-session", "cmd1",
             only_output_on_error: true
           )
 

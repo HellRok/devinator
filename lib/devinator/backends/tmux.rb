@@ -35,10 +35,15 @@ class Devinator
       end
 
       def run_commands
+        @executer.run(
+          BINARY, "new-session", "-d", "-s", @name,
+          only_output_on_error: true
+        )
+
         @commands.each_with_index do |command, index|
           if index.zero?
             @executer.run(
-              BINARY, "new-session", "-d", "-s", @name, "-n", command[:title],
+              BINARY, "rename-window", "-t", @name, command[:title],
               only_output_on_error: true
             )
           else
