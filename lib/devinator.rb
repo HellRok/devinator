@@ -1,6 +1,7 @@
 require "tty-command"
 
 require "devinator/config"
+require "devinator/backends/tmux"
 
 class Devinator
   def self.run

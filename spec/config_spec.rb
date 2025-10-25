@@ -53,14 +53,18 @@ describe Devinator::Config do
       it "returns bin/dev when available" do
         File.write "bin/dev", ""
 
-        expect(Devinator::Config.run_commands).to eq([{dev: "bin/dev"}])
+        expect(Devinator::Config.run_commands).to eq([
+          {title: "dev", command: "bin/dev"}
+        ])
       end
 
       it "returns dx/exec bin/dev when both available" do
         File.write "dx/exec", ""
         File.write "bin/dev", ""
 
-        expect(Devinator::Config.run_commands).to eq([{dev: "dx/exec bin/dev"}])
+        expect(Devinator::Config.run_commands).to eq([
+          {title: "dev", command: "dx/exec bin/dev"}
+        ])
       end
     end
 
@@ -76,8 +80,8 @@ describe Devinator::Config do
         PROCFILE
 
         expect(Devinator::Config.run_commands).to eq([
-          {"web" => "bin/web"},
-          {"assets" => "bin/assets"}
+          {title: "web", command: "bin/web"},
+          {title: "assets", command: "bin/assets"}
         ])
       end
 
@@ -89,8 +93,8 @@ describe Devinator::Config do
         PROCFILE
 
         expect(Devinator::Config.run_commands).to eq([
-          {"web" => "dx/exec bin/web"},
-          {"assets" => "dx/exec bin/assets"}
+          {title: "web", command: "dx/exec bin/web"},
+          {title: "assets", command: "dx/exec bin/assets"}
         ])
       end
 
@@ -103,8 +107,8 @@ describe Devinator::Config do
           PROCFILE
 
           expect(Devinator::Config.run_commands).to eq([
-            {"web" => "bin/web"},
-            {"tests" => "bin/tests"}
+            {title: "web", command: "bin/web"},
+            {title: "tests", command: "bin/tests"}
           ])
         end
       end

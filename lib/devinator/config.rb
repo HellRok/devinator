@@ -17,11 +17,11 @@ class Devinator
       if File.exist? "Procfile.dev"
         File.read("Procfile.dev").lines.each { |line|
           name, command = line.split(":", 2)
-          commands << {name => dx_exec(command.strip)}
+          commands << {title: name, command: dx_exec(command.strip)}
         }
 
       elsif File.exist? "bin/dev"
-        commands << {dev: dx_exec("bin/dev")}
+        commands << {title: "dev", command: dx_exec("bin/dev")}
       end
 
       commands
