@@ -10,8 +10,12 @@ Gem::Specification.new do |gem|
   DESC
   gem.authors = ["Sean Earle"]
   gem.email = ["sean.r.earle@gmail.com"]
-  gem.files = `git ls-files`.split($\)
   gem.homepage = "https://github.com/HellRok/devinator"
   gem.license = "MIT"
   gem.required_ruby_version = ">= 2.6.0"
+
+  gem.files = `git ls-files`.split($\)
+  gem.executables = [
+    "devinator"
+  ]
 end

@@ -38,9 +38,8 @@ describe Devinator::Backends::Tmux do
 
     describe "#reconnect" do
       it "reconnects to the session" do
-        expect(@tty).to receive(:run).with(
-          "tmux", "attach-session", "-t", "the-session",
-          only_output_on_error: true
+        expect(Process).to receive(:exec).with(
+          "tmux", "attach-session", "-t", "the-session"
         )
 
         @tmux.new(
@@ -102,11 +101,74 @@ describe Devinator::Backends::Tmux do
           only_output_on_error: true
         )
 
+        expect(Process).to receive(:exec).with(
+          "tmux", "attach-session", "-t", "the-session"
+        )
+
         @tmux.new(
           name: "the-session",
           commands: [],
           executer: @tty
         ).connect
+      end
+    end
+
+    describe "#launch" do
+      context "with a session available" do
+        before do
+          @tty = double(:tty)
+        end
+
+        it "reconnects to that session" do
+          expect(@tty).to receive(:run!).with(
+            "tmux", "has-session", "-t", "the-session"
+          ).and_return(double(:result, success?: true))
+
+          expect(Process).to receive(:exec).with(
+            "tmux", "attach-session", "-t", "the-session"
+          )
+
+          @tmux.new(
+            name: "the-session",
+            commands: [],
+            executer: @tty
+          ).launch
+        end
+      end
+
+      context "without a session" do
+        it "creates a new session" do
+          expect(@tty).to receive(:run!).with(
+            "tmux", "has-session", "-t", "the-session"
+          ).and_return(double(:result, success?: false))
+
+          expect(@tty).to receive(:run).with(
+            "tmux", "new-session", "-d", "-s", "the-session", "-n", "cmd1",
+            only_output_on_error: true
+          )
+
+          expect(@tty).to receive(:run).with(
+            "tmux", "send-keys", "-t", "the-session", "command 1", "C-m",
+            only_output_on_error: true
+          )
+
+          expect(@tty).to receive(:run).with(
+            "tmux", "select-window", "-t", "the-session:0",
+            only_output_on_error: true
+          )
+
+          expect(Process).to receive(:exec).with(
+            "tmux", "attach-session", "-t", "the-session"
+          )
+
+          @tmux.new(
+            name: "the-session",
+            commands: [
+              {title: "cmd1", command: "command 1"}
+            ],
+            executer: @tty
+          ).launch
+        end
       end
     end
   end
