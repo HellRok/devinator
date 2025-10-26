@@ -1,4 +1,30 @@
 describe Devinator::Config do
+  describe ".configure" do
+    it "does nothing with an empty block" do
+      Devinator::Config.configure {}
+
+      expect(Devinator::Config.setup_commands).to eq([])
+      expect(Devinator::Config.run_commands).to eq([])
+    end
+
+    it "loads the setup commands" do
+      Devinator::Config.configure do |config|
+        config.setup_commands = [
+          "update_secrets",
+          "load_secrets sean"
+        ]
+      end
+
+      expect(Devinator::Config.setup_commands).to eq(
+        [
+          "update_secrets",
+          "load_secrets sean"
+        ]
+      )
+      expect(Devinator::Config.run_commands).to eq([])
+    end
+  end
+
   describe ".setup_commands" do
     it "returns nothing when no files" do
       expect(Devinator::Config.setup_commands).to eq([])
@@ -34,8 +60,19 @@ describe Devinator::Config do
       File.write "dx/start", ""
       File.write "dx/build", ""
 
+      Devinator::Config.configure do |config|
+        config.setup_commands = [
+          "update_secrets",
+          "load_secrets sean",
+          "git pull"
+        ]
+      end
+
       expect(Devinator::Config.setup_commands).to eq(
         [
+          "update_secrets",
+          "load_secrets sean",
+          "git pull",
           "dx/build",
           "dx/start",
           "bin/setup"

@@ -108,5 +108,6 @@ RSpec.configure do |config|
     spec.run
   ensure
     Dir.chdir original_dir
+    Devinator::Config.instance_variable_set(:@user_configuration, nil)
   end
 end

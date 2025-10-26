@@ -7,11 +7,14 @@ class Devinator
   def self.run
     tty = TTY::Command.new(uuid: false)
 
-    Config.setup_commands.each { tty.run it, only_output_on_error: true }
+    user_config_path = File.expand_path("~/.config/devinator.rb")
+    Kernel.require(user_config_path) if File.exist?(user_config_path)
+
+    Devinator::Config.setup_commands.each { tty.run it, only_output_on_error: true }
 
     tmux = Devinator::Backends::Tmux.new(
       name: File.basename(Dir.pwd),
-      commands: Config.run_commands,
+      commands: Devinator::Config.run_commands,
       executer: tty
     )
 
