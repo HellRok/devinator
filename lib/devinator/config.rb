@@ -1,3 +1,4 @@
+require "devinator/editor_configuration"
 require "devinator/user_configuration"
 
 class Devinator
@@ -23,11 +24,20 @@ class Devinator
 
       @setup_commands << dx_exec("bin/setup") if File.exist? "bin/setup"
 
+      @setup_commands << user_configuration.editor.command if user_configuration.editor.timing == :end_of_setup
+
       @setup_commands
     end
 
     def self.run_commands
       @commands = []
+
+      if user_configuration.editor.timing == :first_command
+        @commands << {
+          title: user_configuration.editor.title,
+          command: user_configuration.editor.command
+        }
+      end
 
       if File.exist? "Procfile.dev"
         File.read("Procfile.dev").lines.each { |line|
@@ -37,6 +47,13 @@ class Devinator
 
       elsif File.exist? "bin/dev"
         @commands << {title: "dev", command: dx_exec("bin/dev")}
+      end
+
+      if user_configuration.editor.timing == :last_command
+        @commands << {
+          title: user_configuration.editor.title,
+          command: user_configuration.editor.command
+        }
       end
 
       @commands

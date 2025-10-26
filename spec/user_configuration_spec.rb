@@ -20,4 +20,12 @@ describe Devinator::UserConfiguration do
       expect(config.setup_commands).to eq(["update_secrets", "load_secrets", "git pull"])
     end
   end
+
+  describe "#editor" do
+    it "is a EditorConfiguration class" do
+      config = Devinator::UserConfiguration.new
+
+      expect(config.editor).to be_a(Devinator::EditorConfiguration)
+    end
+  end
 end

@@ -6,6 +6,10 @@ class Devinator
       @setup_commands = []
     end
 
+    def editor
+      @editor_configuration ||= Devinator::EditorConfiguration.new
+    end
+
     def setup_commands
       if @setup_commands.is_a?(Enumerable)
         @setup_commands

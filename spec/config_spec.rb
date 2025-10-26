@@ -79,6 +79,23 @@ describe Devinator::Config do
         ]
       )
     end
+
+    context "with an editor command setup" do
+      describe "when the timing is :end_of_setup" do
+        it "returns before the other commands" do
+          Devinator::Config.configure do |config|
+            config.editor.command = "nvim"
+            config.editor.timing = :end_of_setup
+          end
+
+          File.write "bin/setup", ""
+
+          expect(Devinator::Config.setup_commands).to eq([
+            "bin/setup", "nvim"
+          ])
+        end
+      end
+    end
   end
 
   describe ".run_commands" do
@@ -146,6 +163,42 @@ describe Devinator::Config do
           expect(Devinator::Config.run_commands).to eq([
             {title: "web", command: "bin/web"},
             {title: "tests", command: "bin/tests"}
+          ])
+        end
+      end
+    end
+
+    context "with an editor command setup" do
+      describe "when the timing is :first_command" do
+        it "returns before the other commands" do
+          Devinator::Config.configure do |config|
+            config.editor.title = "editor"
+            config.editor.command = "nvim"
+            config.editor.timing = :first_command
+          end
+
+          File.write "bin/dev", ""
+
+          expect(Devinator::Config.run_commands).to eq([
+            {title: "editor", command: "nvim"},
+            {title: "dev", command: "bin/dev"}
+          ])
+        end
+      end
+
+      describe "when the timing is :last_command" do
+        it "returns before the other commands" do
+          Devinator::Config.configure do |config|
+            config.editor.title = "editor"
+            config.editor.command = "nvim"
+            config.editor.timing = :last_command
+          end
+
+          File.write "bin/dev", ""
+
+          expect(Devinator::Config.run_commands).to eq([
+            {title: "dev", command: "bin/dev"},
+            {title: "editor", command: "nvim"}
           ])
         end
       end
