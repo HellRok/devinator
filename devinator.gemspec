@@ -18,4 +18,6 @@ Gem::Specification.new do |gem|
   gem.executables = [
     "devinator"
   ]
+
+  gem.add_dependency "tty-command"
 end

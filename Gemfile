@@ -1,5 +1,5 @@
 source "https://rubygems.org" do
-  gem "tty-command"
+  gemspec
 
   group :development do
     gem "standardrb"
