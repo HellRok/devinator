@@ -28,6 +28,7 @@ environment. So running it would look more like:
 ## Installation for Linux/OSX
 
 1. run `ruby --version` to confirm it's installed
+1. run `tmux -V` to confirm it's installed
 2. `gem install devinator`
 3. `which devinator` to confirm it installed and is in your `$PATH`
 
