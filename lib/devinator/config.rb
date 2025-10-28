@@ -19,10 +19,10 @@ class Devinator
 
       @setup_commands += user_configuration.setup_commands
 
-      @setup_commands << "dx/build" if File.exist? "dx/build"
-      @setup_commands << "dx/start" if File.exist? "dx/start"
+      @setup_commands << "dx/build" if File.file? "dx/build"
+      @setup_commands << "dx/start" if File.file? "dx/start"
 
-      @setup_commands << dx_exec("bin/setup") if File.exist? "bin/setup"
+      @setup_commands << dx_exec("bin/setup") if File.file? "bin/setup"
 
       @setup_commands << user_configuration.editor.command if user_configuration.editor.timing == :end_of_setup
 
@@ -39,13 +39,13 @@ class Devinator
         }
       end
 
-      if File.exist? "Procfile.dev"
+      if File.file? "Procfile.dev"
         File.read("Procfile.dev").lines.each { |line|
           name, command = line.split(":", 2)
           @commands << {title: name, command: dx_exec(command.strip)}
         }
 
-      elsif File.exist? "bin/dev"
+      elsif File.file? "bin/dev"
         @commands << {title: "dev", command: dx_exec("bin/dev")}
       end
 
@@ -61,7 +61,7 @@ class Devinator
 
     private_class_method def self.dx_exec(command)
       result = ""
-      result << "dx/exec " if File.exist? "dx/exec"
+      result << "dx/exec " if File.file? "dx/exec"
       result << command
     end
   end

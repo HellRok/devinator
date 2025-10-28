@@ -8,7 +8,7 @@ class Devinator
     tty = TTY::Command.new(uuid: false)
 
     user_config_path = File.expand_path("~/.config/devinator.rb")
-    Kernel.require(user_config_path) if File.exist?(user_config_path)
+    Kernel.require(user_config_path) if File.file?(user_config_path)
 
     Devinator::Config.setup_commands.each { tty.run it, only_output_on_error: true }
 

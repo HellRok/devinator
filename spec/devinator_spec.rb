@@ -15,7 +15,7 @@ describe Devinator do
 
     it "runs the setup commands before run commands" do
       expect(File).to receive(:expand_path).with("~/.config/devinator.rb").and_return("user config")
-      expect(File).to receive(:exist?).with("user config").and_return(false)
+      expect(File).to receive(:file?).with("user config").and_return(false)
       expect(TTY::Command).to receive(:new).with(uuid: false)
 
       expect(Dir).to receive(:pwd).and_return("/path/to/project")
@@ -44,7 +44,7 @@ describe Devinator do
 
     it "loads the user config" do
       expect(File).to receive(:expand_path).with("~/.config/devinator.rb").and_return("user config")
-      expect(File).to receive(:exist?).with("user config").and_return(true)
+      expect(File).to receive(:file?).with("user config").and_return(true)
 
       expect(Kernel).to receive(:require).with("user config")
 
